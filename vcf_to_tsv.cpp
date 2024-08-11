@@ -9,7 +9,7 @@
 int main(int argc, char *argv[]){
     char c;
     int hflag = 0;
-    char help[] = "Usage: get_pass_variants [OPTION]... VCF_file\n  "
+    char help[] = "Usage: vcf_to_tsv [OPTIONS]... VCF_file Wanted_fields_file\n  "
                 "-h\tshow help options";
 
     while ((c = getopt (argc, argv, "h")) != -1){
@@ -32,13 +32,18 @@ int main(int argc, char *argv[]){
     argc -= optind;
     argv += optind;
 
-    /* Check if there is a VCF file argument */
+    /* Check if there is a VCF and the wanted fields files arguments */
     if (argc < 2) {
-        std::cout << "VCF file path not specified\n";
+        if (argc == 0)
+            std::cout << "VCF file path not specified\n";
+        if (argc == 1)
+            std::cout << "Wanted fields file path not specified\n";
         return -1;
     }
 
     std::ifstream file(argv[0]);
+    
+
     std::string line;
     int number_of_snpeff_variants = 0;
 
@@ -49,6 +54,9 @@ int main(int argc, char *argv[]){
         while (getline(wanted_fields_file, line)){
             wanted_fields.push_back(line);
         }
+    } else {
+        std::cout << "File " << argv[1] << " not find\n";
+        exit(EXIT_FAILURE);
     }
 
     Vcf_with_genonotype v;
@@ -207,6 +215,9 @@ int main(int argc, char *argv[]){
             }
         }
         file.close();
+    } else {
+        std::cout << "File " << argv[0] << " not find\n";
+        exit(EXIT_FAILURE);
     }
 
 
